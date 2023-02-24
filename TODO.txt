@@ -1,0 +1,84 @@
+En début de  seance
+===================
+1) Copier le repertoire du sujet de labos :
+  - /home/TP/modules/sujets/REV/PyOpenGL
+chez vous en le renommant Dupond_Dupont_PyOpenGL (si vos noms sont Dupond, Dupont):
+--> cp -r /home/TP/modules/sujets/REV/PyOpenGL/ $HOME/chemin_acces_repertoire_REV_OpenGL/Dupond_Dupont_PyOpenGL
+
+Tester les applications
+=======================
+python carre.py
+python cube.py
+
+Objectifs
+=========
+Créer un repère de scène 3D (3 axes Ox,Oy,Oz).
+Créer un modèle de voiture (carroserie + 4 roues)
+Déplacer le vehicule dans le plan Oxz par touches/fleches clavier.
+ 
+Création de scene 
+=================
+Création de primitives :
+  - primitives.py : primitives 3D (carre,cube, sphere ... axe,wcs) 
+Création de scene basée sur ces primitives :
+  - scene.py : création du vehicule (wheel,car) + interaction (touches clavier)
+  
+1) Repère de scene3D 
+--------------------
+Créer un repère de scène 3D redimensionnable (size)  :
+   - def axe(size) : création d'un axe (disque+cylindre+cone)
+   - def wcs(size) : repere 3D (3 axes)
+On représentera les axes avec le code de couleur conventionnel (R,G,B) pour (Ox,Oy,Oz).
+
+2) Création du véhicule
+------------------------
+Créer un modèle de véhicule qui soit redimensionnable (size)
+  - def car(size) : véhicule (carroserie + 4 roues)
+  - def axe(size) : la carosserie 
+  - def wheel() :  une roue (tore) avec boulons (cylindres fermés)
+
+Positionner les 4 roues correctement sur la carrosserie
+
+Placer le repère de scène  et le vehicule dans l'environnement.
+
+3) Manipulation du véhicule
+---------------------------
+Mettre en place les touches d'interaction pour déplacer le vehicule dans le plan Oxz :
+  - translations : 
+      - faire avancer/reculer le véhicule 
+  -  rotations : 
+      - les roues et boulons tournent en même temps que le véhicule avance
+      - les roues avant pivotent lorsqu'on change d'orientation
+      - les roues avant se repositionnent dans la direction où le véhicule se dirige
+
+4) Déplacement de caméra
+------------------------
+Mettre en place les touches d'interaction pour  :
+  - déplacer la caméra pour se rapprocher, s'éloigner du centre de la scène 
+  - tourner autour du centre de la scene dans le plan Oxz.
+
+5) Repère de scene 
+------------------
+Mettre en place les touches d'interaction (touches w/W) pour  :
+  -rendre visible/invisible le repère 
+
+Archivage
+=========
+En fin de séance, se déplacer sur le repertoire parent du répertoire de travail (Dupond_Dupont_PyOpenGL/).
+--> cd ..
+Creer une archive Dupond_Dupont_PyOpenGL.tgz du repertoire Dupond_Dupont_PyOpenGL/ :
+--> tar zcvf Dupond_Dupont_PyOpenGL.tgz Dupond_Dupont_PyOpenGL/
+Deposer cette archive sous le repertoire de rendu de travail  : 
+--> cp Dupond_Dupont_PyOpenGL.tgz /home/TP/TPrendu/nedelec/REV/PyOpenGL
+
+Cette archive contiendra  les fichiers suivants :
+   1- cubes.py
+   2- primitives.py
+   3- scene.py
+   4- square.py
+   4- TODO.txt
+
+Attention
+---------
+VERIFIER que l'archive n'est pas vide et qu'elle contient les fichiers de l'application : 
+--> tar ztvf Dupond_Dupont_PyOpenGL.tgz
