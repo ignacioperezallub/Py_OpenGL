@@ -18,9 +18,12 @@ from primitives import *
 
 size,theta_y=0.5,0.0
 position=[0,0,0]
+old_position = position
 orientation=0
-length = 0.5
+length = 1
 phi = 30*pi/180
+rot_wheel = 0
+turn_wheel = 0
 wcs_visible = True
 
 # TODO : create bolts 
@@ -69,43 +72,48 @@ def car(size) :
   height = size*1.5
   cylinder_base = base * 0.6
   cylinder_height = height * 0.6
-  glTranslatef(0,0.04,0)
   glPushMatrix()
-  position=[0,cylinder_base/1.2,0] #size*1.5
   glTranslatef(position[0],position[1],position[2])
-  #glRotatef(0, 0, 0, 1)
+  glRotatef(orientation,0,1,0)
   glColor3f(1.0, 0.5, 0.2)  # yellow
   axe(base,height)
-  glPopMatrix()
   
   #Wheel FR
   glPushMatrix()
-  glTranslatef(-cylinder_base*1.3,0,cylinder_height*0.8)
+  glTranslatef(-cylinder_base*1.3,0,cylinder_height*0.3)
   glRotatef(90, 0, 1, 0)
+  glRotatef(turn_wheel, 0, 1, 0)
+  glRotatef(rot_wheel, 0, 0, 1)
   wheel(size/8,5)
   glPopMatrix()
 
   #Wheel FL
   glPushMatrix()
-  glTranslatef(cylinder_base*1.3,0,cylinder_height*0.8)
+  glTranslatef(cylinder_base*1.3,0,cylinder_height*0.3)
   glRotatef(90, 0, 1, 0)
+  glRotatef(turn_wheel, 0, 1, 0)
+  glRotatef(rot_wheel, 0, 0, 1)
   wheel(size/8,5)
   glPopMatrix()
   
   #Wheel BR
   glPushMatrix()
-  glTranslatef(-cylinder_base*1.3,0,cylinder_height*0.2)
+  glTranslatef(-cylinder_base*1.3,0,-cylinder_height*0.3)
   glRotatef(90, 0, 1, 0)
+  glRotatef(rot_wheel, 0, 0, 1)
   wheel(size/8,5)
   glPopMatrix()
   
   #Wheel BL
   glPushMatrix()
-  glTranslatef(cylinder_base*1.3,0,cylinder_height*0.2)
+  glTranslatef(cylinder_base*1.3,0,-cylinder_height*0.3)
   glRotatef(90, 0, 1, 0)
+  glRotatef(rot_wheel, 0, 0, 1)
   wheel(size/8,5)
   glPopMatrix()
-  #glPopMatrix()
+
+
+  glPopMatrix()
   
 
 def display() :
@@ -131,11 +139,9 @@ def display() :
   if wcs_visible: wcs(size*0.8)  
   
   glPushMatrix()
-  glTranslatef(position[0],position[1],position[2])
-  glRotatef(orientation,0,1,0)
+  glTranslatef(0,0.04,0) # to put wheels over the floor
   car(0.5*size)
   glPopMatrix()
-  glPushMatrix()
   
   glutSwapBuffers()
   # glPushMatrix()
@@ -144,7 +150,6 @@ def display() :
   # glRotatef(orientation,0,1,0)
   # glColor3f(1,0,0)
   # torus(0.1*size,0.5*size)
-  glPopMatrix()
   
 
 def reshape(width,height) :
@@ -158,7 +163,7 @@ def reshape(width,height) :
 def on_keyboard_action(key,x,y) :
   global size,theta_y,wcs_visible, length
   if key==b'h':
-    print("Documentation Interaction  : Nom-Prenom ") 
+    print("Documentation Interaction  : PEREZ_BRUNO ") 
     print("h : afficher cette aide")
     # print("s : sortie d'application")
     print("----------------------------------------") 
@@ -169,9 +174,9 @@ def on_keyboard_action(key,x,y) :
     print("f : facettes \n")
     print("v : sommets \n")
     print("c/C : faces CW/CCW \n")
-    print("r/R : redimensionner l'objet \n")
-    print("y/Y : tourner l'objet autour de l'axe Oy\n")
-    print("w : afficher/cacher le repere de scene")
+    print("r/R : rapprocher/eloigner la camera \n")
+    print("y/Y : tourner la camera autour de l'axe Oy\n")
+    print("w/W : afficher/cacher le repere de scene")
   elif key==b'e':
     glPolygonMode(GL_FRONT_AND_BACK,GL_LINE)
   elif key==b'f':
@@ -201,17 +206,23 @@ def on_keyboard_action(key,x,y) :
   glutPostRedisplay()
   
 def on_special_key_action(key,x,y) :
-  global position,orientation
+  global position,orientation, rot_wheel, turn_wheel
   if key ==  GLUT_KEY_UP :
     position[0]+=0.1*size*sin(orientation*pi/180.0)
     position[2]+=0.1*size*cos(orientation*pi/180.0)
+    rot_wheel+=5
+    turn_wheel=0
   elif  key ==  GLUT_KEY_DOWN :
     position[0]-=0.1*size*sin(orientation*pi/180.0)
     position[2]-=0.1*size*cos(orientation*pi/180.0)
+    rot_wheel-=5
+    turn_wheel=0
   elif key ==  GLUT_KEY_LEFT :
     orientation+=5
+    turn_wheel=30
   elif  key ==  GLUT_KEY_RIGHT :
     orientation-=5
+    turn_wheel=-30
   else :
     pass
   glutPostRedisplay()
@@ -224,7 +235,7 @@ if __name__ == "__main__" :
   glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE)
   glutInitWindowSize(600,400)
   glutInitWindowPosition(600,300)
-  glutCreateWindow("REV OpenGL Scene : Dupont Jean")
+  glutCreateWindow("REV OpenGL Scene : PEREZ_BRUNO")
   glutDisplayFunc(display)
   glutReshapeFunc(reshape)
   glutKeyboardFunc(on_keyboard_action)

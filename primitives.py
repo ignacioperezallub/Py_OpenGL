@@ -18,6 +18,8 @@ def wcs(size) :
   glVertex3f(0,0,size)
   glEnd()
 """
+cylinder_height = 0
+
 def square(size) :
 # face avant : sommets de couleurs RGBW
   glBegin(GL_POLYGON)
@@ -123,6 +125,7 @@ def torus(inner,outer,sides=10,rings=5) :
   glutSolidTorus(inner, outer, sides, rings)
 
 def axe(base,height,slices=10,stacks=5) :
+  global cylinder_height
   # Calculate dimensions
   cylinder_height = height * 0.6
   cone_height = height * 0.3
@@ -131,6 +134,9 @@ def axe(base,height,slices=10,stacks=5) :
   cone_base = base * 1.2
   disk_inner = 0.0
   disk_outer = base * 0.6
+  # move axis to the front wheels
+  glPushMatrix()
+  glTranslatef(0,0,-cylinder_height*0.5)
   # Draw components
   glPushMatrix()                 
   # Draw disk at the bottom               
@@ -143,28 +149,29 @@ def axe(base,height,slices=10,stacks=5) :
   glTranslatef(0, 0, cylinder_height / 2 + cone_height)
   cone(cone_base, cone_height, slices, stacks)
   glPopMatrix()
+  glPopMatrix()
 
 def wcs(size) :
   # y-axis
   glPushMatrix()
-  #glTranslatef(-size/2,0,0)
   glRotatef(-90, 1, 0, 0)
+  glTranslatef(0,0, 0.3*cylinder_height)
   glColor3f(0.0, 1.0, 0.0)  # green
   axe(size/15, size*0.5)
   glPopMatrix()
   
   # x-axis
   glPushMatrix()
-  #glTranslatef(0,-size/2,0)
   glRotatef(90, 0, 1, 0)
+  glTranslatef(0,0, 0.5*cylinder_height)
   glColor3f(1.0, 0.0, 0.0)  # red
   axe(size/15, size*0.5)
   glPopMatrix()
   
   # z-axis
   glPushMatrix()
-  #glTranslatef(0,0,-size/2)
   glRotatef(0, 0, 0, 1)
+  glTranslatef(0,0, 0.5*cylinder_height)
   glColor3f(0.0, 0.0, 1.0)  # blue
   axe(size/15, size*0.5)
   glPopMatrix()
