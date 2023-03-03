@@ -6,7 +6,7 @@ try :
 except:
   print ("Error: PyOpenGL not installed properly !!")
   sys.exit()
-
+"""
 def wcs(size) :
   glBegin(GL_LINES)
   glColor3ub(255,255,255)
@@ -17,7 +17,7 @@ def wcs(size) :
   glVertex2f(0,0)
   glVertex3f(0,0,size)
   glEnd()
-
+"""
 def square(size) :
 # face avant : sommets de couleurs RGBW
   glBegin(GL_POLYGON)
@@ -123,12 +123,51 @@ def torus(inner,outer,sides=10,rings=5) :
   glutSolidTorus(inner, outer, sides, rings)
 
 def axe(base,height,slices=10,stacks=5) :
-  # TODO : create 3D axe with disk, cylinder,cone
-  pass
+  # Calculate dimensions
+  cylinder_height = height * 0.6
+  cone_height = height * 0.3
+  disk_height = height * 0.1
+  cylinder_base = base * 0.6
+  cone_base = base * 1.2
+  disk_inner = 0.0
+  disk_outer = base * 0.6
+  # Draw components
+  glPushMatrix()                 
+  # Draw disk at the bottom               
+  glTranslatef(0, 0, disk_height / 2)       
+  disk(disk_inner, disk_outer, slices, 1)
+  # Draw cylinder
+  glTranslatef(0, 0, 0)
+  cylinder(cylinder_base, cylinder_base, cylinder_height, slices, stacks)
+  # Draw cone
+  glTranslatef(0, 0, cylinder_height / 2 + cone_height)
+  cone(cone_base, cone_height, slices, stacks)
+  glPopMatrix()
 
 def wcs(size) :
-  # TODO : redefine  WCS  with 3D axes (Ox,Oy,Oz)
-  pass
+  # y-axis
+  glPushMatrix()
+  #glTranslatef(-size/2,0,0)
+  glRotatef(-90, 1, 0, 0)
+  glColor3f(0.0, 1.0, 0.0)  # green
+  axe(size/15, size*0.5)
+  glPopMatrix()
+  
+  # x-axis
+  glPushMatrix()
+  #glTranslatef(0,-size/2,0)
+  glRotatef(90, 0, 1, 0)
+  glColor3f(1.0, 0.0, 0.0)  # red
+  axe(size/15, size*0.5)
+  glPopMatrix()
+  
+  # z-axis
+  glPushMatrix()
+  #glTranslatef(0,0,-size/2)
+  glRotatef(0, 0, 0, 1)
+  glColor3f(0.0, 0.0, 1.0)  # blue
+  axe(size/15, size*0.5)
+  glPopMatrix()
 
 def floor(size,tiles=10) :
   tile_size=size/tiles
@@ -146,3 +185,4 @@ def floor(size,tiles=10) :
             glRotatef(90,1,0,0)
             glRectf(-tile_size/2.0, -tile_size/2.0, tile_size/2.0, tile_size/2.0)
         glPopMatrix()
+

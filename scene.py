@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from sys import argv, exit
 from time import sleep
-from math import pi,cos,sin, radians
+from math import pi,cos,sin,radians
 
 from primitives import wcs,square,stick
 
@@ -19,12 +19,14 @@ from primitives import *
 size,theta_y=0.5,0.0
 position=[0,0,0]
 orientation=0
+length = 0.5
+phi = 30*pi/180
+wcs_visible = True
 
 # TODO : create bolts 
 def bolt(radius, height):
-  stick(radius, radius, height)
+   pass
 
-# TODO : create wheel with bolts 
 def wheel(size,bolts=5) :
   glPushMatrix()
   glColor3f(0,0,0)
@@ -61,9 +63,50 @@ def wheel(size,bolts=5) :
   glTranslatef(0.3*size*cos(radians(4*360/5)),0.3*size*sin(radians(4*360/5)),-0.5*0.5*size)
   stick(0.05*size, 0.05*size, size*0.5)
   glPopMatrix()
-# TODO : create car : body (axe) + 4 wheels
+
 def car(size) :
-   pass
+  base = size/5
+  height = size*1.5
+  cylinder_base = base * 0.6
+  cylinder_height = height * 0.6
+  glTranslatef(0,0.04,0)
+  glPushMatrix()
+  position=[0,cylinder_base/1.2,0] #size*1.5
+  glTranslatef(position[0],position[1],position[2])
+  #glRotatef(0, 0, 0, 1)
+  glColor3f(1.0, 0.5, 0.2)  # yellow
+  axe(base,height)
+  glPopMatrix()
+  
+  #Wheel FR
+  glPushMatrix()
+  glTranslatef(-cylinder_base*1.3,0,cylinder_height*0.8)
+  glRotatef(90, 0, 1, 0)
+  wheel(size/8,5)
+  glPopMatrix()
+
+  #Wheel FL
+  glPushMatrix()
+  glTranslatef(cylinder_base*1.3,0,cylinder_height*0.8)
+  glRotatef(90, 0, 1, 0)
+  wheel(size/8,5)
+  glPopMatrix()
+  
+  #Wheel BR
+  glPushMatrix()
+  glTranslatef(-cylinder_base*1.3,0,cylinder_height*0.2)
+  glRotatef(90, 0, 1, 0)
+  wheel(size/8,5)
+  glPopMatrix()
+  
+  #Wheel BL
+  glPushMatrix()
+  glTranslatef(cylinder_base*1.3,0,cylinder_height*0.2)
+  glRotatef(90, 0, 1, 0)
+  wheel(size/8,5)
+  glPopMatrix()
+  #glPopMatrix()
+  
 
 def display() :
 #  glClearColor(1.0,1.0,1.0,0.0);
@@ -74,24 +117,35 @@ def display() :
 
   glMatrixMode(GL_MODELVIEW)
   glLoadIdentity()
-  camera=[0,0,2,0,0,0,0,1,0]
-  # camera=[1,1,1,0,0,0,0,1,0]
+  #camera=[0,0,2,0,0,0,0,1,0]
+  
+  camera=[length*sin(phi)*cos(theta_y), length*cos(phi), length*sin(phi)*sin(theta_y),
+          0,0,0,
+          0,1,0]
+
   gluLookAt(camera[0],camera[1],camera[2], 
             camera[3],camera[4],camera[5],
             camera[6],camera[7],camera[8])
-  floor(10*size)
-  wcs(2*size)
   glRotatef(theta_y,0,1,0)
-
-  wheel(size,5)
+  floor(size*10)
+  if wcs_visible: wcs(size*0.8)  
+  
+  glPushMatrix()
+  glTranslatef(position[0],position[1],position[2])
+  glRotatef(orientation,0,1,0)
+  car(0.5*size)
+  glPopMatrix()
+  glPushMatrix()
+  
+  glutSwapBuffers()
   # glPushMatrix()
   # glTranslatef(position[0],position[1],position[2])
   # cube(0.3*size)
   # glRotatef(orientation,0,1,0)
   # glColor3f(1,0,0)
   # torus(0.1*size,0.5*size)
-  # glPopMatrix()
-  glutSwapBuffers()
+  glPopMatrix()
+  
 
 def reshape(width,height) :
   print("reshape width : {}, height : {}".format(width,height))
@@ -102,7 +156,7 @@ def reshape(width,height) :
   gluPerspective(perspective[0],perspective[1],perspective[2],perspective[3])
 
 def on_keyboard_action(key,x,y) :
-  global size,theta_y,wcs_visible
+  global size,theta_y,wcs_visible, length
   if key==b'h':
     print("Documentation Interaction  : Nom-Prenom ") 
     print("h : afficher cette aide")
@@ -129,17 +183,19 @@ def on_keyboard_action(key,x,y) :
   elif key==b'C' :
     glFrontFace(GL_CCW)
   elif key==b'r' :
-    size-=0.1
+    length-=0.1
   elif key==b'R' :
-    size+=0.1
+    length+=0.1
   elif key==b'y' :
-    theta_y-=1.0
+    theta_y-=1.0*pi/180
   elif key==b'Y' :
-    theta_y+=1.0
-  elif key==b's' :
-    sys.exit()
+    theta_y+=1.0*pi/180
+  # elif key==b's' :
+  #   sys.exit()
   elif key==b'w' :
-    pass
+    wcs_visible = True
+  elif key==b'W' :
+    wcs_visible = False
   else :
     pass
   glutPostRedisplay()
@@ -150,11 +206,12 @@ def on_special_key_action(key,x,y) :
     position[0]+=0.1*size*sin(orientation*pi/180.0)
     position[2]+=0.1*size*cos(orientation*pi/180.0)
   elif  key ==  GLUT_KEY_DOWN :
-    pass
+    position[0]-=0.1*size*sin(orientation*pi/180.0)
+    position[2]-=0.1*size*cos(orientation*pi/180.0)
   elif key ==  GLUT_KEY_LEFT :
     orientation+=5
   elif  key ==  GLUT_KEY_RIGHT :
-    pass
+    orientation-=5
   else :
     pass
   glutPostRedisplay()
@@ -174,3 +231,4 @@ if __name__ == "__main__" :
   glutSpecialFunc(on_special_key_action)
 #   glutIdleFunc(animation)
   glutMainLoop()
+
