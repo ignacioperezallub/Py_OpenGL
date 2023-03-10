@@ -31,7 +31,7 @@ def glut_event(scene):
   glutDisplayFunc(scene.display)
   glutReshapeFunc(scene.reshape)
   glutKeyboardFunc(scene.on_keyboard_action)
-  glutSpecialFunc(scene.on_special_key_action);
+  glutSpecialFunc(scene.on_special_key_action)
 ##  glutIdleFunc(scene.animation)
 
 class Scene :
@@ -56,6 +56,10 @@ class Scene :
     gl_init()
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
+    self.camera = [self.length*sin(self.phi)*cos(self.theta_y), 
+                   self.length*cos(self.phi), 
+                   self.length*sin(self.phi)*sin(self.theta_y),
+                   0,0,0,0,1,0]  
     posx,posy,posz=self.camera[0],self.camera[1],self.camera[2]
     dirx,diry,dirz=self.camera[3],self.camera[4],self.camera[5]
     vupx,vupy,vupz=self.camera[6],self.camera[7],self.camera[8]
@@ -148,15 +152,15 @@ class Scene :
     elif key== b'G':
       pass
     elif key == b'n' :
-      pass
+      self.length += 0.1
     elif key == b'N' :
-      pass
+      self.length -= 0.1
     elif key== b's' :
       pass
     elif  key == b'u' :
-      pass
+      self.theta_y += 0.1
     elif  key == b'U' :
-      pass
+      self.theta_y -= 0.1
     elif  key == b'v' :
       pass
     elif  key == b'V' :
