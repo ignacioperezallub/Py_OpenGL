@@ -42,7 +42,12 @@ class Model :
 class Car(Model) :
   def __init__(self,size=1.0) :
     Model.__init__(self,size)
+    glPushMatrix()
+    glRotate(90, 0, 1, 0)
+    glTranslatef(0, 2, 0)
     self.create()
+    glPopMatrix()
+
 
   def create(self) :
     glPushMatrix()
