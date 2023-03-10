@@ -8,7 +8,7 @@ except:
   print ("Error: PyOpenGL not installed properly !!")
   sys.exit()
 
-from primitives import cube,axe,floor
+from primitives import *
 
 class Model :
   def __init__(self,size=1.0) :
@@ -16,19 +16,26 @@ class Model :
     self.angle=0.0
     self.position=[0.0,0.0,0.0]
   # getter/setter
+
   def set_size(self,size) :
     self.size=size
+
   def get_size(self) :
     return self.size
+  
   def set_orientation(self,angle) :
-    print(angle)
+    #print(angle)
     self.angle=angle
+
   def get_orientation(self) :
     return self.angle
+  
   def set_position(self,position) :
     self.position=position
+
   def get_position(self) :
     return self.position
+  
   def create(self) :
     raise NotImplementedError
 
