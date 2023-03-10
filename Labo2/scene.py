@@ -70,7 +70,7 @@ class Scene :
     glTranslatef(-3,0.5,3)
     glRotatef(45,0,1,0)
     glColor3f(1.0,0.0,1.0)
-    glutSolidTeapot(self.size/5.0)
+    #glutSolidTeapot(self.size/5.0)
     glPopMatrix()
 
     # model to control 
