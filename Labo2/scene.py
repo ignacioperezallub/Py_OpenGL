@@ -148,9 +148,9 @@ class Scene :
     elif key== b'G':
       pass
     elif key == b'n' :
-      pass
+      self.length-=0.1
     elif key == b'N' :
-      pass
+      self.length+=0.1
     elif key== b's' :
       pass
     elif  key == b'u' :
