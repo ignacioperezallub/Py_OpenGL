@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from math import pi,sin,cos
+from math import pi,sin,cos,radians
 
 try :
   from OpenGL.GLUT import *
@@ -36,12 +36,22 @@ def glut_event(scene):
 
 class Scene :
   def __init__(self,size) :
+    self.theta_y=0.5
+    self.phi = 30*pi/180
+    self.length = 1
+    self.wcs_visible = True
     self.size=size
     self.model=Car(size)
 ##    self.camera=[0,0,5,0,0,0,0,1,0]    
-    self.camera=[2,3,7,0,0,0,0,1,0]    
+##    self.camera=[2,3,7,0,0,0,0,1,0]
+    self.camera = [self.length*sin(self.phi)*cos(self.theta_y), 
+                   self.length*cos(self.phi), 
+                   self.length*sin(self.phi)*sin(self.theta_y),
+                   0,0,0,0,1,0]    
     self.perspective=[60.0,1.0,0.1,50.0]
     self.rotation_y=0.0
+
+
   def display(self) :
     gl_init()
     glMatrixMode(GL_MODELVIEW)
@@ -51,7 +61,10 @@ class Scene :
     vupx,vupy,vupz=self.camera[6],self.camera[7],self.camera[8]
     gluLookAt(posx,posy,posz,dirx,diry,dirz,vupx,vupy,vupz)
     glRotatef(self.rotation_y,0,1,0)
-    floor(10*self.size) 
+    if self.wcs_visible:
+            wcs(0.5)
+    floor(10*self.size)
+
     # Object to catch
     glPushMatrix()
     glTranslatef(-3,0.5,3)
@@ -59,8 +72,12 @@ class Scene :
     glColor3f(1.0,0.0,1.0)
     #glutSolidTeapot(self.size/5.0)
     glPopMatrix()
+
     # model to control 
+    glPushMatrix()
+    glTranslatef(0, self.size*0.8, 0)
     self.model.create()
+    glPopMatrix()
     glutSwapBuffers()
 
   def reshape(self,width,height) :
