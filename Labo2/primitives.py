@@ -124,8 +124,6 @@ def torus(inner,outer,sides=10,rings=5) :
   glutSolidTorus(inner, outer, sides, rings)
 
 def axe(base,height,slices=10,stacks=5, car=False, centralTurn=0) :
-  disk_inner = 0.0
-  disk_outer = base * 0.6
   
   glPushMatrix()
   # move axis to car's center
@@ -137,9 +135,12 @@ def axe(base,height,slices=10,stacks=5, car=False, centralTurn=0) :
   # Draw cone
   glTranslatef(0, 0, height*0.6 )
   cone(base * 1.1, height * 0.4, slices, stacks)
-  # Draw cone
-  cone(base, height*0.1, slices, stacks)
   glPopMatrix()
+  # Draw cone/disk
+  glPushMatrix()
+  cone(base*0.7, height*0.1, slices, stacks)
+  glPopMatrix()
+
   glPopMatrix()
 
 
