@@ -124,8 +124,6 @@ def torus(inner,outer,sides=10,rings=5) :
   glutSolidTorus(inner, outer, sides, rings)
 
 def axe(base,height,slices=10,stacks=5, car=False, centralTurn=0) :
-  disk_inner = 0.0
-  disk_outer = base * 0.6
   
   glPushMatrix()
   # move axis to car's center
@@ -150,20 +148,20 @@ def wcs(size) :
   glColor3f(1, 0, 0)  # red
   glRotatef(90, 0, 1, 0)
   glTranslatef(0, 0, size / 2)
-  axe(size / 10, size)
+  axe(size / 10, size*4)
   glPopMatrix()
   # Y-axis
   glPushMatrix()
   glColor3f(0, 1, 0)  # green
   glRotatef(90, -1, 0, 0)
   glTranslatef(0, 0, size / 2)
-  axe(size / 10, size)
+  axe(size / 10, size*4)
   glPopMatrix()
   # Z-axis
   glPushMatrix()
   glColor3f(0, 0, 1) # red
   glTranslatef(0, 0, size / 2)
-  axe(size / 10, size)
+  axe(size / 10, size*4)
   glPopMatrix()
   
 def floor(size,tiles=10) :

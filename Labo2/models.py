@@ -46,14 +46,14 @@ class Car(Model) :
 
   def create(self) :
     glPushMatrix()
-    glScalef(1,1,2)
+    #glScalef(1,1,2)
     x,y,z=self.position[0],self.position[1],self.position[2]
     glTranslatef(x,y,z)
     glRotatef(self.angle,0,1,0)
-    axe(0.2*self.size,0.2*self.size)
+    axe(0.2*self.size,0.7*self.size)
     # roue av droite
     glPushMatrix()
-    glTranslatef(-0.2*self.size*1,0,0.2*self.size*2)
+    glTranslatef(-0.2*self.size*0.8,0.0,0.2*self.size*1.5)
     glRotatef(90, 0, 1, 0)
     #glRotatef(turn_wheel, 0, 1, 0)
     #glRotatef(rot_wheel, 0, 0, 1)
@@ -62,7 +62,7 @@ class Car(Model) :
     
     # roue av gauche
     glPushMatrix()
-    glTranslatef(0.2*self.size*1,0,0.2*self.size*2)
+    glTranslatef(0.2*self.size*0.8,0,0.2*self.size*1.5)
     glRotatef(-90, 0, 1, 0)
     #glRotatef(turn_wheel, 0, 1, 0)
     #glRotatef(rot_wheel, 0, 0, 1)
@@ -70,7 +70,7 @@ class Car(Model) :
     glPopMatrix()
     # roue ar droite
     glPushMatrix()
-    glTranslatef(-0.2*self.size*1,0,0.2*self.size*0.2)
+    glTranslatef(-0.2*self.size*0.8,0,0.2*self.size*0.4)
     glRotatef(90, 0, 1, 0)
     #glRotatef(turn_wheel, 0, 1, 0)
     #glRotatef(rot_wheel, 0, 0, 1)
@@ -78,7 +78,7 @@ class Car(Model) :
     glPopMatrix()
     # roue ar gauche
     glPushMatrix()
-    glTranslatef(0.2*self.size*1,0,0.2*self.size*0.2)
+    glTranslatef(0.2*self.size*0.8,0,0.2*self.size*0.4)
     glRotatef(-90, 0, 1, 0)
     #glRotatef(turn_wheel, 0, 1, 0)
     #glRotatef(rot_wheel, 0, 0, 1)
@@ -132,12 +132,32 @@ class Crane(Model) :
     # forarm : a green cylinder
     # joint : a red sphere
     # arm :  a green cylinder
-    glPushMatrix()
+    glPushMatrix() # position and orientation push - PUSH 1
     glTranslatef(self.position[0],self.position[1],self.position[2])
     glRotatef(self.angle,0,1,0)
     glColor3f(1.0,0.0,0.0)
+
+    glPushMatrix() # position on top of the car - PUSH 2
+    glTranslatef(0.0, self.size*3, self.size * 1.5)
     cube(self.size)
-    glPopMatrix()
+    glPopMatrix() # POP 2
+
+    glPushMatrix() # position on top of the cube - PUSH 3
+    
+    
+    glColor3f(1.0, 0.0, 0.0)
+    glTranslatef(0,self.size*3 + self.size + self.size/3.6,self.size*1.5)
+    sphere(self.size/1.8)
+    
+    glColor3f(0.0, 1.0, 0.0)
+    glTranslatef(0, self.size*2,0)
+    glRotatef(90, 1,0,0)
+    cylinder(self.size/2, self.size/2, self.size*2)
+    glPopMatrix() # POP 3
+
+    
+    
+    glPopMatrix() # POP 1
 
 def display() :
   size=2.0

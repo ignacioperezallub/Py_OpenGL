@@ -42,6 +42,7 @@ class Scene :
     self.wcs_visible = True
     self.size=size
     self.model=Car(size)
+    self.crane=Crane(size*0.08)
 ##    self.camera=[0,0,5,0,0,0,0,1,0]    
 ##    self.camera=[2,3,7,0,0,0,0,1,0]
     self.camera = [self.length*sin(self.phi)*cos(self.theta_y), 
@@ -74,13 +75,14 @@ class Scene :
     glTranslatef(-3,0.5,3)
     glRotatef(45,0,1,0)
     glColor3f(1.0,0.0,1.0)
-    #glutSolidTeapot(self.size/5.0)
+    glutSolidTeapot(self.size/5.0)
     glPopMatrix()
 
     # model to control 
     glPushMatrix()
-    glTranslatef(0, self.size*0.8, 0)
+    glTranslatef(0, 0.12, 0)
     self.model.create()
+    self.crane.create()
     glPopMatrix()
     glutSwapBuffers()
 
@@ -200,6 +202,8 @@ class Scene :
         pass
     self.model.set_position(position)
     self.model.set_orientation(orientation)
+    self.crane.set_position(position)
+    self.crane.set_orientation(orientation)
     glutPostRedisplay()
 
   def animation(self) :
