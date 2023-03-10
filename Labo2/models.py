@@ -8,7 +8,7 @@ except:
   print ("Error: PyOpenGL not installed properly !!")
   sys.exit()
 
-from primitives import cube,axe,floor
+from primitives import cube,axe,floor, torus, disk, stick
 
 class Model :
   def __init__(self,size=1.0) :
@@ -43,22 +43,65 @@ class Car(Model) :
     x,y,z=self.position[0],self.position[1],self.position[2]
     glTranslatef(x,y,z)
     glRotatef(self.angle,0,1,0)
-    axe(0.1*self.size,0.1*self.size)
-    glPopMatrix()
+    axe(0.2*self.size,0.2*self.size)
     # roue av droite
+    glPushMatrix()
+    glTranslatef(-0.2*self.size*1,0,0.2*self.size*2)
+    glRotatef(90, 0, 1, 0)
+    #glRotatef(turn_wheel, 0, 1, 0)
+    #glRotatef(rot_wheel, 0, 0, 1)
     self.wheel()
+    glPopMatrix()
+    
     # roue av gauche
+    glPushMatrix()
+    glTranslatef(0.2*self.size*1,0,0.2*self.size*2)
+    glRotatef(-90, 0, 1, 0)
+    #glRotatef(turn_wheel, 0, 1, 0)
+    #glRotatef(rot_wheel, 0, 0, 1)
+    self.wheel()
+    glPopMatrix()
     # roue ar droite
+    glPushMatrix()
+    glTranslatef(-0.2*self.size*1,0,0.2*self.size*0.2)
+    glRotatef(90, 0, 1, 0)
+    #glRotatef(turn_wheel, 0, 1, 0)
+    #glRotatef(rot_wheel, 0, 0, 1)
+    self.wheel()
+    glPopMatrix()
     # roue ar gauche
+    glPushMatrix()
+    glTranslatef(0.2*self.size*1,0,0.2*self.size*0.2)
+    glRotatef(-90, 0, 1, 0)
+    #glRotatef(turn_wheel, 0, 1, 0)
+    #glRotatef(rot_wheel, 0, 0, 1)
+    self.wheel()
+    glPopMatrix()
+
+    glPopMatrix()
 
   def wheel(self,boulons=5) :
-    glutWireCube(0.2*self.size)
+    #glutWireCube(0.2*self.size)
     angle=360.0/boulons
+    glPushMatrix()
+    glColor3f(0,0,0)
+    torus(0.07*self.size*0.5, 0.07*self.size, 10, 10)
+    glTranslatef(0,0,0.07*self.size*0.1)
+    glColor3f(1,1,1)
+    disk(0, 0.07*self.size*0.7)
+    glPopMatrix()
+
+    glPushMatrix()
+    glRotatef(180,0,1,0)
+    glTranslatef(0,0,0.07*self.size*0.1)
+    disk(0, 0.07*self.size*0.7)
+    glPopMatrix()
     for i in range(boulons) :
       glPushMatrix()
       glRotatef(angle*i,0.0,0.0,1.0)
-      glTranslatef(0.70*(self.size/2.0),0.0,0.0)
-      glutWireCube(0.20*self.size)
+      glTranslatef(0.70*(0.07*self.size/2.0),0.0,-0.5*0.5*0.07*self.size)
+      stick(0.05*0.07*self.size, 0.05*0.07*self.size, 0.07*self.size*0.5)
+      #glutWireCube(0.20*self.size)
       glPopMatrix()
 
 
