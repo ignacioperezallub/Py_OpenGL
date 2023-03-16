@@ -42,11 +42,30 @@ class Model :
 class Car(Model) :
   def __init__(self,size=1.0) :
     Model.__init__(self,size)
+    self.wheel_rot = 0
+    self.wheel_turn = 0
+
     glPushMatrix()
     glRotate(90, 0, 1, 0)
     glTranslatef(2, 2, 0)
     self.create()
     glPopMatrix()
+
+  def set_wheel_rot(self,wheel_rot) :
+    self.wheel_rot = wheel_rot
+
+  def get_wheel_rot(self) :
+    return self.wheel_rot
+  
+  def set_wheel_turn(self,wheel_turn) :
+    self.wheel_turn = wheel_turn
+
+  def get_wheel_turn(self) :
+    return self.wheel_turn
+  
+  def reset_car(self):
+    self.position=[0.0,0.0,0.0]
+    self.angle=0.0
 
 
   def create(self) :
@@ -64,8 +83,8 @@ class Car(Model) :
     glPushMatrix()
     glTranslatef(-0.2*self.size*0.8,0,0.2*self.size*1.5+centralTurn)
     glRotatef(90, 0, 1, 0)
-    #glRotatef(turn_wheel, 0, 1, 0)
-    #glRotatef(rot_wheel, 0, 0, 1)
+    glRotatef(self.wheel_turn, 0, 1, 0)
+    glRotatef(self.wheel_rot, 0, 0, 1)
     self.wheel()
     glPopMatrix()
     
@@ -73,8 +92,8 @@ class Car(Model) :
     glPushMatrix()
     glTranslatef(0.2*self.size*0.8,0,0.2*self.size*1.5+centralTurn)
     glRotatef(-90, 0, 1, 0)
-    #glRotatef(turn_wheel, 0, 1, 0)
-    #glRotatef(rot_wheel, 0, 0, 1)
+    glRotatef(self.wheel_turn, 0, 1, 0)
+    glRotatef(self.wheel_rot, 0, 0, 1)
     self.wheel()
     glPopMatrix()
 
@@ -82,8 +101,7 @@ class Car(Model) :
     glPushMatrix()
     glTranslatef(-0.2*self.size*0.8,0,0.2*self.size*0.4+centralTurn)
     glRotatef(90, 0, 1, 0)
-    #glRotatef(turn_wheel, 0, 1, 0)
-    #glRotatef(rot_wheel, 0, 0, 1)
+    glRotatef(self.wheel_rot, 0, 0, 1)
     self.wheel()
     glPopMatrix()
 
@@ -91,8 +109,7 @@ class Car(Model) :
     glPushMatrix()
     glTranslatef(0.2*self.size*0.8,0,0.2*self.size*0.4+centralTurn)
     glRotatef(-90, 0, 1, 0)
-    #glRotatef(turn_wheel, 0, 1, 0)
-    #glRotatef(rot_wheel, 0, 0, 1)
+    glRotatef(self.wheel_rot, 0, 0, 1)
     self.wheel()
     glPopMatrix()
 
@@ -140,6 +157,12 @@ class Crane(Model) :
 
   def get_forarm_angle(self) :
     return self.forarm_angle
+  
+  def reset_crane(self):
+    self.position=[0.0,0.0,0.0]
+    self.angle=0.0
+    self.arm_angle=30.0          
+    self.forarm_angle=30.0
 
   def create(self) :
     # TO DO : crane (une grue) creation
@@ -147,45 +170,55 @@ class Crane(Model) :
     # forarm : a green cylinder
     # joint : a red sphere
     # arm :  a green cylinder
-    glPushMatrix()
 
+    glPushMatrix()
     glTranslatef(self.position[0],self.position[1],self.position[2])
     glRotatef(self.angle,0,1,0)
-    glColor3f(1.0,0.0,0.0)
 
+    # forearm : a blue cylinder
+    glPushMatrix()
+    glTranslatef(0.0,self.size*4.5,self.size*0.5)
+    glRotatef(self.arm_angle, 0, 0, 1)  # rotate the forearm around the joint
+
+    # first cylinder matrix
+    glPushMatrix()
+    # second sphere matrix                         
+    glPushMatrix()                         
+    glTranslatef(0.0,self.size*5,0.0)
+    glRotatef(self.forarm_angle, 0, 0, 1)  # rotate the forearm around the joint
+    
     # tool :  a black cone
     glPushMatrix()
     glColor3f(0.0,0.0,0.0)
-    glTranslatef(0.0,self.size*9.5,self.size*0.5)
+    glTranslatef(0.0,self.size*5.5,0.0)
     glRotatef(-90, 1, 0, 0)
-    cone(self.size/2,self.size)
-    glPopMatrix()
-
-    # arm :  a green cylinder
-    glPushMatrix()
-    glColor3f(0.0,1.0,0.0)
-    glTranslatef(0.0,self.size*7.5,self.size*0.5)
+    cone(self.size,self.size*2)
+    glPopMatrix()                          #######################
+    # second cylinder matrix
+    glPushMatrix()                         
+    glTranslatef(0.0,self.size*0.5,0.0)
     glRotatef(-90, 1, 0, 0)
-    cylinder(self.size/3,self.size/3,self.size*2)
-    glPopMatrix()
+    glColor3f(0.0,0.0,1.0)
+    cylinder(self.size/2,self.size/2,self.size*5)
+    glPopMatrix()                          #######################
 
-    # joint : a red sphere
-    glPushMatrix()
     glColor3f(1.0,0.0,0.0)
-    glTranslatef(0.0,self.size*7,self.size*0.5)
-    sphere(self.size*0.5)
+    sphere(self.size)
+    glPopMatrix()                          #######################
+
+    glRotatef(-90, 1, 0, 0)
+    glColor3f(0.0,0.0,1.0)
+    cylinder(self.size/2,self.size/2,self.size*5)
+    glPopMatrix()                          #######################
+
     glPopMatrix()
 
-    # arm :  a green cylinder
-    glPushMatrix()
-    glColor3f(0.0,1.0,0.0)
-    glTranslatef(0.0,self.size*5,self.size*0.5)
-    glRotatef(-90, 1, 0, 0)
-    cylinder(self.size/3,self.size/3,self.size*2)
     # joint : a red sphere
+    glPushMatrix()
     glColor3f(1.0,0.0,0.0)
     glTranslatef(0.0,self.size*4.5,self.size*0.5)
-    sphere(self.size*0.5)
+    sphere(self.size)
+    glRotatef(self.arm_angle, 0, 0, 1)  # rotate the joint itself
     glPopMatrix()
 
     # Cockpit : a red cube
@@ -196,6 +229,7 @@ class Crane(Model) :
     glPopMatrix()
 
     glPopMatrix()
+    
 
 def display() :
   size=2.0

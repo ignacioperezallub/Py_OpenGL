@@ -38,8 +38,8 @@ class Scene :
   def __init__(self,size) :
     self.theta_y=0.5
     self.phi = 30*pi/180
-    self.length = 1
-    self.wcs_visible = True
+    self.length = 5
+    self.wcs_visible = False
     self.size=size
     self.model=Car(size)
     self.crane=Crane(size*0.08)
@@ -51,6 +51,22 @@ class Scene :
                    0,0,0,0,1,0]    
     self.perspective=[60.0,1.0,0.1,50.0]
     self.rotation_y=0.0
+
+  def reset_scene(self):
+    self.theta_y=0.5
+    self.phi = 30*pi/180
+    self.length = 5
+    self.wcs_visible = True
+    self.camera = [self.length*sin(self.phi)*cos(self.theta_y), 
+                   self.length*cos(self.phi), 
+                   self.length*sin(self.phi)*sin(self.theta_y),
+                   0,0,0,0,1,0]  
+    posx,posy,posz=self.camera[0],self.camera[1],self.camera[2]
+    dirx,diry,dirz=self.camera[3],self.camera[4],self.camera[5]
+    vupx,vupy,vupz=self.camera[6],self.camera[7],self.camera[8]
+    gluLookAt(posx,posy,posz,dirx,diry,dirz,vupx,vupy,vupz)
+    self.model.reset_car()
+    self.crane.reset_crane()
 
 
   def display(self) :
@@ -66,8 +82,8 @@ class Scene :
     vupx,vupy,vupz=self.camera[6],self.camera[7],self.camera[8]
     gluLookAt(posx,posy,posz,dirx,diry,dirz,vupx,vupy,vupz)
     glRotatef(self.rotation_y,0,1,0)
-    if self.wcs_visible:
-            wcs(0.5)
+    
+    if self.wcs_visible: wcs(0.5)
     floor(10*self.size)
 
     # Object to catch
@@ -75,7 +91,7 @@ class Scene :
     glTranslatef(-3,0.5,3)
     glRotatef(45,0,1,0)
     glColor3f(1.0,0.0,1.0)
-    #glutSolidTeapot(self.size/5.0)
+    glutSolidTeapot(self.size/5.0)
     glPopMatrix()
 
     # model to control 
@@ -95,6 +111,8 @@ class Scene :
     gluPerspective(fovy,ratio,near,far)
 
   def on_keyboard_action(self,key, x, y) :
+    arm_angle=self.crane.get_arm_angle_arm() 
+    forarm_angle = self.crane.get_forarm_angle()
     if key==b'a':
       glutIdleFunc(scene.animation)
     elif key==b'A':
@@ -129,30 +147,32 @@ class Scene :
       print("----")
       print("b/B : faire pivoter le bras")
       print("g/G : faire pivoter l'avant-bras")
-      print("...: ....")
-      print("----") 
-      print("...")
-      print("----")
-      print("...: ....")
-     
     elif key== b'b' :
-      pass
+      arm_angle-=5
+      if arm_angle <= -90: arm_angle = -90
+      self.crane.set_arm_angle(arm_angle)
     elif key== b'B':
-      pass
+      arm_angle+=5
+      if arm_angle >= 90: arm_angle = 90
+      self.crane.set_arm_angle(arm_angle)
     elif key== b'c' :
       glFrontFace(GL_CW)
     elif key== b'C' :
       glFrontFace(GL_CCW)
-    elif key== b'e' :
-      pass  
+    elif key== b'i' :
+      self.reset_scene()  
     elif key== b'f':
       glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
     elif key== b'F':
       glPolygonMode(GL_FRONT_AND_BACK,GL_LINE)
     elif key== b'g' :
-      pass
+      forarm_angle-=5
+      if forarm_angle <= -135: forarm_angle = -135
+      self.crane.set_forarm_angle(forarm_angle)
     elif key== b'G':
-      pass
+      forarm_angle+=5
+      if forarm_angle >= 135: forarm_angle = 135
+      self.crane.set_forarm_angle(forarm_angle)
     elif key == b'n' :
       self.length += 0.1
     elif key == b'N' :
@@ -168,9 +188,9 @@ class Scene :
     elif  key == b'V' :
       pass
     elif  key == b'w' :
-      pass
-    elif  key == 'W' :
-      pass
+      self.wcs_visible = True
+    elif  key == b'W' :
+      self.wcs_visible = False
     else :
       pass
     glutPostRedisplay()
@@ -188,23 +208,33 @@ class Scene :
   def on_special_key_action(self,key, x, y) :
     position=self.model.get_position()
     orientation=self.model.get_orientation()
+    rot_wheel = self.model.get_wheel_rot()
+    turn_wheel = self.model.get_wheel_turn()
 
     if key ==  GLUT_KEY_UP :
         position[0]+=0.1*self.size*sin(orientation*pi/180.0)
         position[2]+=0.1*self.size*cos(orientation*pi/180.0)
+        rot_wheel+=5
+        turn_wheel=0
     
     elif  key ==  GLUT_KEY_DOWN :
         position[0]-=0.1*self.size*sin(orientation*pi/180.0)
         position[2]-=0.1*self.size*cos(orientation*pi/180.0)
+        rot_wheel-=5
+        turn_wheel=0
 
     elif key ==  GLUT_KEY_LEFT :
         orientation+=5
+        turn_wheel=30
     elif  key ==  GLUT_KEY_RIGHT :
         orientation-=5
+        turn_wheel=-30
     else :
         pass
     self.model.set_position(position)
     self.model.set_orientation(orientation)
+    self.model.set_wheel_rot(rot_wheel)
+    self.model.set_wheel_turn(turn_wheel)
     self.crane.set_position(position)
     self.crane.set_orientation(orientation)
     glutPostRedisplay()
