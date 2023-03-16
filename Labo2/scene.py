@@ -53,6 +53,7 @@ class Scene :
                    0,0,0,0,1,0]    
     self.perspective=[60.0,1.0,0.1,50.0]
     self.rotation_y=0.0
+    self.resize_trans = 0.0
 
   def reset_scene(self):
     self.theta_y=0.5
@@ -98,9 +99,10 @@ class Scene :
     glutSolidTeapot(self.size/5.0)
     glPopMatrix()
 
+    self.resize_trans = 0.2
     # model to control 
     glPushMatrix()
-    glTranslatef(0, 0.2, 0)
+    glTranslatef(0, self.resize_trans, 0)
     self.crane.create()
     self.model.create()
     glPopMatrix()
@@ -144,6 +146,7 @@ class Scene :
       print("------") 
       print("n/N : se rapprocher/s'eloigner de la scene")
       print("u/U : tourner autour de la scene")
+      print("p/P : tourner autour de le model")
       print("----") 
       print("Voiture")
       print("----")
@@ -190,12 +193,18 @@ class Scene :
       self.theta_y += 0.1
     elif  key == b'U' :
       self.theta_y -= 0.1
+    elif  key == b'p' :
+      self.phi += 0.1
+    elif  key == b'P' :
+      self.phi -= 0.1
     elif  key == b'r' :
       self.model_size-=0.1
       self.crane_size-=0.01
+      self.resize_trans-=0.02
     elif  key == b'R' :
       self.model_size+=0.1
       self.crane_size+=0.01
+      self.resize_trans+=0.02
     elif  key == b'w' :
       self.wcs_visible = True
     elif  key == b'W' :
@@ -233,7 +242,7 @@ class Scene :
         turn_wheel=0
 
     elif key ==  GLUT_KEY_LEFT :
-        position[0]+=0.03*self.size*sin(orientation*pi/180.0)
+        position[0]+=0.05*self.size*sin(orientation*pi/180.0)
         position[2]+=0.03*self.size*cos(orientation*pi/180.0)
         rot_wheel+=5
         turn_wheel=0
@@ -241,7 +250,7 @@ class Scene :
         turn_wheel=30
     elif  key ==  GLUT_KEY_RIGHT :
         position[0]+=0.03*self.size*sin(orientation*pi/180.0)
-        position[2]+=0.03*self.size*cos(orientation*pi/180.0)
+        position[2]+=0.05*self.size*cos(orientation*pi/180.0)
         rot_wheel+=5
         turn_wheel=0
         orientation-=5

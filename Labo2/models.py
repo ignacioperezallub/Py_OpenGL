@@ -70,7 +70,7 @@ class Car(Model) :
 
   def create(self) :
     glPushMatrix()
-    #glScalef(1,1,2)
+    glColor3f(1,0.8,0)
     x,y,z=self.position[0],self.position[1],self.position[2]
     glTranslatef(x,y,z)
     glRotatef(self.angle,0,1,0)
