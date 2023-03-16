@@ -38,11 +38,13 @@ class Scene :
   def __init__(self,size) :
     self.theta_y=0.5
     self.phi = 30*pi/180
-    self.length = 5
+    self.length = 6
     self.wcs_visible = False
     self.size=size
-    self.model=Car(size)
-    self.crane=Crane(size*0.08)
+    self.model_size = self.size
+    self.crane_size = self.size*0.08
+    self.model=Car(self.model_size)
+    self.crane=Crane(self.crane_size)
 ##    self.camera=[0,0,5,0,0,0,0,1,0]    
 ##    self.camera=[2,3,7,0,0,0,0,1,0]
     self.camera = [self.length*sin(self.phi)*cos(self.theta_y), 
@@ -55,7 +57,7 @@ class Scene :
   def reset_scene(self):
     self.theta_y=0.5
     self.phi = 30*pi/180
-    self.length = 5
+    self.length = 6
     self.wcs_visible = True
     self.camera = [self.length*sin(self.phi)*cos(self.theta_y), 
                    self.length*cos(self.phi), 
@@ -65,6 +67,8 @@ class Scene :
     dirx,diry,dirz=self.camera[3],self.camera[4],self.camera[5]
     vupx,vupy,vupz=self.camera[6],self.camera[7],self.camera[8]
     gluLookAt(posx,posy,posz,dirx,diry,dirz,vupx,vupy,vupz)
+    self.model.size = self.size
+    self.crane.size = self.size*0.08
     self.model.reset_car()
     self.crane.reset_crane()
 
@@ -82,7 +86,7 @@ class Scene :
     vupx,vupy,vupz=self.camera[6],self.camera[7],self.camera[8]
     gluLookAt(posx,posy,posz,dirx,diry,dirz,vupx,vupy,vupz)
     glRotatef(self.rotation_y,0,1,0)
-    
+
     if self.wcs_visible: wcs(0.5)
     floor(10*self.size)
 
@@ -96,11 +100,14 @@ class Scene :
 
     # model to control 
     glPushMatrix()
-    glTranslatef(0, 0.12, 0)
+    glTranslatef(0, 0.2, 0)
     self.crane.create()
     self.model.create()
     glPopMatrix()
     glutSwapBuffers()
+
+    self.model.size = self.model_size 
+    self.crane.size = self.crane_size
 
   def reshape(self,width,height) :
     glViewport(0,0, width,height)
@@ -178,15 +185,17 @@ class Scene :
     elif key == b'N' :
       self.length -= 0.1
     elif key== b's' :
-      pass
+      sys.exit()
     elif  key == b'u' :
       self.theta_y += 0.1
     elif  key == b'U' :
       self.theta_y -= 0.1
-    elif  key == b'v' :
-      pass
-    elif  key == b'V' :
-      pass
+    elif  key == b'r' :
+      self.model_size-=0.1
+      self.crane_size-=0.01
+    elif  key == b'R' :
+      self.model_size+=0.1
+      self.crane_size+=0.01
     elif  key == b'w' :
       self.wcs_visible = True
     elif  key == b'W' :
@@ -224,9 +233,17 @@ class Scene :
         turn_wheel=0
 
     elif key ==  GLUT_KEY_LEFT :
+        position[0]+=0.03*self.size*sin(orientation*pi/180.0)
+        position[2]+=0.03*self.size*cos(orientation*pi/180.0)
+        rot_wheel+=5
+        turn_wheel=0
         orientation+=5
         turn_wheel=30
     elif  key ==  GLUT_KEY_RIGHT :
+        position[0]+=0.03*self.size*sin(orientation*pi/180.0)
+        position[2]+=0.03*self.size*cos(orientation*pi/180.0)
+        rot_wheel+=5
+        turn_wheel=0
         orientation-=5
         turn_wheel=-30
     else :
